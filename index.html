@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="./main.js" defer type=""module></script>
+  
+  <title>FM | Todo app</title>
+</head>
+<body>
+  <header>
+    <div class="content">
+      <div class="top">
+        <h1>TODO</h1>
+        <input type="checkbox">
+      </div>
+      <div class="todo-input-container">
+        <input type="checkbox" class="check-todo">
+        <input class="todo-input" type="text" placeholder="Creact new todo...">
+      </div>
+    </div>
+  </header>
+  <section class="todos">
+    <ul>
+      <li>
+        <div class="todo">
+          <input type="checkbox" id="me" class="check-todo">
+          <label for="me">Do the thing that takes time</label>
+          <button class="delete-todo"></button>
+        </div>
+      </li>
+    </ul>
+    <div class="options">
+      <p class="items-left">10 items left</p>
+      <div class="display-options">
+        <button class="all selected">All</button>
+        <button class="active">Active</button>
+        <button class="completed">Completed</button>
+      </div>
+      <button class="clear-completed">Clear Completed</button>
+    </div>
+  </section>
+  <section class="tip">
+    <p>Drag and drop to reorder the list</p>
+  </section>
+</body>
+</html>
