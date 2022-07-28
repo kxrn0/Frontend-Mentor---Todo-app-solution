@@ -1,10 +1,272 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-.options .selected {
-    background: blue;
-    color: azure;
+:root {
+    --blue: #3A7CFD;
+}
+
+:root.light {
+    --bg-image: url("./images/bg-desktop-light.jpg");
+    --todo-input-bg: white;
+    --theme-icon: url("./images/icon-sun.svg");
+    --placeholder-color: #9495A5;
+    --outline-color: #E3E4F1;
+    --todo-input-color: #393A4B;
+    --todo-color: #494C6B;
+    --daedalus: #D1D2DA;
+}
+
+:root.dark {
+    --bg-image: url("./images/bg-desktop-dark.jpg");
+    --todo-input-bg: #25273D;
+    --theme-icon: url("./images/icon-moon.svg");
+    --placeholder-color: #767992;
+    --outline-color: gray;
+    --todo-input-color: #C8CBE7;
+    --todo-color: #C8CBE7;
+    --daedalus: #767992;
+}
+
+@font-face {
+    font-family: js;
+    src: url("./fonts/JosefinSans-Regular.ttf");
+}
+
+@font-face {
+    font-family: js-bold;
+    src: url("./fonts/JosefinSans-Bold.ttf");
+}
+
+.check-todo {
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin: 20px 24px;
+    outline: 1px solid var(--outline-color);
+}
+
+.dragging {
+    opacity: .5;
+    box-shadow: 0 0 10px 10px rgb(0, 0, 0, .25);
+    border-radius: 5px;
+    border: 2px solid pink;
+}
+
+/* 
+    Remember to add a linear gradient outline on hover.
+*/
+
+.check-todo:checked {
+    background-image: linear-gradient(135deg, #55DDFF 0%, #C058F3 100%);
+    display: grid;
+    place-items: center;
+}
+
+.check-todo:checked::after {
+    content: url("./images/icon-check.svg");
+}
+
+.header {
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    transition: background-image .33s;
+}
+
+.header .content {
+    width: 540px;
+    margin: 70px auto;
+}
+
+.header .content .top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+.header .content .top h1 {
+    color: white;
+    font-family: js-bold;
+    font-size: 40px;
+    letter-spacing: 15px;
+    line-height: 40px;
+}
+
+.header .content .top input[type="checkbox"] {
+    appearance: none;
+    background-image: var(--theme-icon);
+    background-size: cover;
+    width: 25px;
+    height: 25px;
+    transition: background-image .33s;
+}
+
+.header .content .todo-input-container {
+    background: var(--todo-input-bg);
+    display: flex;
+    border-radius: 5px;
+    transition: background-color .33s;
+}
+
+.header .content .todo-input-container .todo-input {
+    background: var(--todo-input-bg);
+    border: none;
+    border-radius: 5px;
+    flex-grow: 1;
+    outline: none;
+    transition: background-color .33s;
+}
+
+.header .content .todo-input-container .todo-input::placeholder, .header .content .todo-input-container .todo-input {
+    color: var(--placeholder-color);
+    font-family: js;
+    font-size: 18px;
+    letter-spacing: -.25px;
+}
+
+.header .content .todo-input-container .todo-input::placeholder {
+    color: var(--placeholder-color);   
+}
+
+.header .content .todo-input-container .todo-input {
+    color: var(--todo-input-color);
+}
+
+.todos {
+    width:540px;
+    margin: 0 auto;
+    background: red;
+    position: relative;
+}
+
+.todos .todos-container {
+    position: absolute;
+    top: -50px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    box-shadow: 0px 35px 50px -15px rgba(194, 195, 214, 0.5);
+}
+
+.todos .todo:first-child {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.todos .todo {
+    background: white;
+    width: 540px;
+    border-bottom: 1px solid var(--outline-color);
+    display: flex;
+    justify-content: space-between;
+}
+
+.todos .todo label {
+    color: var(--todo-color);
+    font-family: js;
+    font-size: 18px;
+    letter-spacing: -.25px;
+    max-width: 350px;
+}
+
+.todos .todo .check-todo:checked + label {
+    color: var(--daedalus);
+    text-decoration-line: line-through;
+}
+
+.todos .todo .wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.todos .todo .delete-todo {
+    background-image: url("./images/icon-cross.svg");
+    background-size: cover;
+    background-color: transparent;
+    width: 18px;
+    height: 18px;
+    border: none;
+    margin-right: 24px;
+    align-self: center;
+    opacity: 0;
+    transition: opacity .33s;
+}
+
+.todos .todo:hover .delete-todo {
+    opacity: 1;
+}
+
+.todos .options {
+    background: white;
+    border-radius: 5px;
+    position: relative;
+    width: 540px;
+}
+
+.todos .options p, .todos .options button {
+    background: white;
+    border: none;
+    color: var(--placeholder-color);
+    letter-spacing: -.2px;
+    font-size: 14px;
+}
+
+.todos .options p {
+    font-family: js;
+}
+
+.todos .options button {
+    cursor: pointer;
+}
+
+.todos .options .clear-completed {
+    font-family: js;
+}
+
+.todos .options .display-options button {
+    font-family: js-bold;
+}
+
+.todos .options .display-options button.selected {
+    color: var(--blue);
+}
+
+.todos .options .display-options {
+    display: flex;
+    gap: 20px;
+}
+
+.todos .options .union {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px 20px 24px;
+    position: relative;
+}
+
+.todos .options .rest {
+    width: 180px;
+    display: flex;
+    gap: 65px;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 16px;
+    right: calc(50% - 90px);
+}
+
+.todos .options .rest .tip {
+    color: var(--placeholder-color);
+    font-family: js;
+    font-size: 14px;
+    letter-spacing: -.2px;
+    width: max-content;
 }

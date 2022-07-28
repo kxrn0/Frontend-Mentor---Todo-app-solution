@@ -10,15 +10,47 @@ const showActive = document.querySelector(".options .active");
 const showCompleted = document.querySelector(".options .completed");
 const clearCompleted = document.querySelector(".clear-completed");
 const states = {all: "all", active: "active", completed: "completed"};
-let todos, state;
+let todos, state, lis;
+
+/**
+ * [] fix the bug that happens when one task is deleted, and it shows all other tasks on different modes
+ */
 
 todos = [];
+lis = [];
 state = states.all;
 
 let byme = ["one", "two", "three", "four", "five"];
 
 for (let i = 0; i < byme.length; i++)
     add_todo(byme[i]);
+
+todoUl.addEventListener("dragover", event => {
+    event.preventDefault();
+
+    const dragger = document.querySelector(".dragging");
+    const afterElement = compute_after_element(todoUl, event.clientY); 
+
+    if (afterElement === null) {
+        todoUl.append(dragger);
+    }
+    else {
+        todoUl.insertBefore(dragger, afterElement);
+    }
+});
+
+function compute_after_element(container, y) {
+    const draggables = [...container.querySelectorAll("li:not(.dragging)")];
+
+    return draggables.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+
+        if (offset  < 0 && offset > closest.offset)
+            return {offset, element: child};
+        return closest;
+    }, {offset: Number.NEGATIVE_INFINITY}).element;
+}
 
 showAll.addEventListener("click", () => {
     if (showAll.classList.contains("selected"))
@@ -90,18 +122,29 @@ function add_todo(value) {
 
 function render(cond) {
     todoUl.innerHTML = '';
+    lis = [];
 
     for (let todo of todos) {
         if (cond(todo)) {
             const li = document.createElement("li");
             const todoElem = create_todo(todo, delete_todo, update_state);
 
+            lis.push(li);
+            li.setAttribute("draggable", true);
             li.append(todoElem);
             todoUl.append(li)
         };
     }
 
+    lis.forEach(li => {
+        li.addEventListener("dragstart", () => li.classList.add("dragging"))
+
+        li.addEventListener("dragend", () => li.classList.remove("dragging"));
+    });
+
     update_items_left();
+    if (checked.checked)
+        checked.checked = false;
 }
 
 function update_items_left() {
@@ -123,15 +166,18 @@ function create_todo(todo, remove, update) {
     const todoElem = document.createElement("div");
     const check = document.createElement("input");
     const label = document.createElement("label");
+    const wrapper = document.createElement("div");
     const deleteTodo = document.createElement("button");
 
-    todoElem.append(check);
-    todoElem.append(label);
+    wrapper.append(check);
+    wrapper.append(label);
+    todoElem.append(wrapper);
     todoElem.append(deleteTodo);
 
     todoElem.classList.add("todo");
     check.classList.add("check-todo");
     deleteTodo.classList.add("delete-todo");
+    wrapper.classList.add("wrapper");
 
     check.setAttribute("type", "checkbox");
     label.innerText = todo.value;
@@ -139,11 +185,22 @@ function create_todo(todo, remove, update) {
     check.setAttribute("id", todo.id);
     label.setAttribute("for", todo.id);
 
-    deleteTodo.innerText = "hi"
-
     deleteTodo.addEventListener("click", () => remove(todo.id));
 
     check.addEventListener("click", () => update(todo.id))
 
     return todoElem;
 }
+
+//--------------------------------------------------------------------
+const root = document.documentElement;
+const themeCheck = document.querySelector(".header .content .top input[type='checkbox']");
+
+root.className = "light";
+
+themeCheck.addEventListener("click", () => {
+    if (themeCheck.checked)
+        root.className = "dark";
+    else
+        root.className = "light";
+});
