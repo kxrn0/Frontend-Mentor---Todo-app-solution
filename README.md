@@ -57,5 +57,5 @@ I learned to implement drag and drop functionality.
 
 ## Author
 
-- Frontend Mentor - [@yourusername](https://www.frontendmentor.io/profile/kxrp)
-- Twitter - [@yourusername](https://www.twitter.com/_by_me_0x177)
+- Frontend Mentor - [@kxrp](https://www.frontendmentor.io/profile/kxrp)
+- Twitter - [@kxrp](https://www.twitter.com/_by_me_0x177)
