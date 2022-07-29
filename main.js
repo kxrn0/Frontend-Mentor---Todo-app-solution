@@ -119,17 +119,26 @@ function render() {
             li.addEventListener("dragstart", () => li.classList.add("dragging"))
 
             li.addEventListener("dragend", () => {
-                const todoElms = document.querySelectorAll(".todo input[type='checkbox']");
+                const todoElms = [...document.querySelectorAll(".todo input[type='checkbox']")];
                 const temp = [];
-    
+                let dec;
+
+                dec = 0;
                 for (let i = 0; i < todos.length; i++) {
-                    const index = todos.findIndex(todo => todo.id == todoElms[i].id);
-    
+                    let index;
+
+                    index = todoElms.findIndex(elm => elm.id == todos[i].id);
+                    if (!~index) {
+                        temp.push(todos[i]);
+                        dec++;
+                        continue;
+                    }
+                    index = todos.findIndex(todo => todo.id == todoElms[i - dec].id);
                     temp.push(todos[index]);
                 }
                 todos = temp;
                 render();
-                
+
                 li.classList.remove("dragging");
             });
 
@@ -138,7 +147,7 @@ function render() {
     }
 
     update_items_left();
-    
+
     if (checked.checked)
         checked.checked = false;
 }

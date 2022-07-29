@@ -11,6 +11,7 @@
 }
 
 :root.light {
+    --body-bg: white;
     --bg-image: url("./images/bg-desktop-light.jpg");
     --todo-input-bg: white;
     --theme-icon: url("./images/icon-sun.svg");
@@ -19,9 +20,11 @@
     --todo-input-color: #393A4B;
     --todo-color: #494C6B;
     --daedalus: #D1D2DA;
+    --container-shadow: rgba(194, 195, 214, 0.5);
 }
 
 :root.dark {
+    --body-bg: #171823;
     --bg-image: url("./images/bg-desktop-dark.jpg");
     --todo-input-bg: #25273D;
     --theme-icon: url("./images/icon-moon.svg");
@@ -30,6 +33,7 @@
     --todo-input-color: #C8CBE7;
     --todo-color: #C8CBE7;
     --daedalus: #767992;
+    --container-shadow: rgba(0, 0, 0, 0.5);
 }
 
 @font-face {
@@ -40,6 +44,10 @@
 @font-face {
     font-family: js-bold;
     src: url("./fonts/JosefinSans-Bold.ttf");
+}
+
+body {
+    background: var(--body-bg);
 }
 
 .check-todo {
@@ -57,10 +65,6 @@
     border-radius: 5px;
     border: 2px solid rgb(152, 178, 241);
 }
-
-/* 
-    Remember to add a linear gradient outline on hover.
-*/
 
 .check-todo:checked {
     background-image: linear-gradient(135deg, #55DDFF 0%, #C058F3 100%);
@@ -126,7 +130,8 @@
     transition: background-color .33s;
 }
 
-.header .content .todo-input-container .todo-input::placeholder, .header .content .todo-input-container .todo-input {
+.header .content .todo-input-container .todo-input::placeholder,
+.header .content .todo-input-container .todo-input {
     color: var(--placeholder-color);
     font-family: js;
     font-size: 18px;
@@ -134,7 +139,7 @@
 }
 
 .header .content .todo-input-container .todo-input::placeholder {
-    color: var(--placeholder-color);   
+    color: var(--placeholder-color);
 }
 
 .header .content .todo-input-container .todo-input {
@@ -142,7 +147,7 @@
 }
 
 .todos {
-    width:540px;
+    width: 540px;
     margin: 0 auto;
     background: red;
     position: relative;
@@ -153,16 +158,16 @@
     top: -50px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    box-shadow: 0px 35px 50px -15px rgba(194, 195, 214, 0.5);
+    box-shadow: 0px 35px 50px -15px var(--container-shadow);
 }
 
-.todos .todo:first-child {
+.todos ul li:first-child .todo {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
 
 .todos .todo {
-    background: white;
+    background: var(--todo-input-bg);
     width: 540px;
     border-bottom: 1px solid var(--outline-color);
     display: flex;
@@ -177,7 +182,7 @@
     max-width: 350px;
 }
 
-.todos .todo .check-todo:checked + label {
+.todos .todo .check-todo:checked+label {
     color: var(--daedalus);
     text-decoration-line: line-through;
 }
@@ -205,14 +210,15 @@
 }
 
 .todos .options {
-    background: white;
+    background: var(--todo-input-bg);
     border-radius: 5px;
     position: relative;
     width: 540px;
 }
 
-.todos .options p, .todos .options button {
-    background: white;
+.todos .options p,
+.todos .options button {
+    background: transparent;
     border: none;
     color: var(--placeholder-color);
     letter-spacing: -.2px;
@@ -225,6 +231,11 @@
 
 .todos .options button {
     cursor: pointer;
+    transition: color .33s;
+}
+
+.todos .options button:hover {
+    color: var(--todo-color);
 }
 
 .todos .options .clear-completed {
@@ -269,4 +280,50 @@
     font-size: 14px;
     letter-spacing: -.2px;
     width: max-content;
+}
+
+@media screen and (max-width: 800px) {
+    .todos .todo .delete-todo {
+        opacity: 1;
+    }   
+}
+
+@media screen and (max-width: 600px) {
+    .header {
+        height: 250px;
+    }
+
+    .header .content {
+        width: 327px;
+        margin: 48px auto;
+    }
+
+    .header .content .top h1 {
+        font-size: 30px;
+    }
+
+    .header .content .top input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+    }
+
+    .todos {
+        width: 327px;
+    }
+
+    .todos .todo {
+        width: 327px;
+    }
+
+    .todos .options {
+        width: 327px
+    }
+
+    .todos .options .rest {
+        top: 100px;
+    }
+
+    .todos .todos-container {
+        top: -20px;
+    }
 }
