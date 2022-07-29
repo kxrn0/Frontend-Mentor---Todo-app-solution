@@ -2,23 +2,20 @@ const todosContainer = document.querySelector(".todos ul");
 const addTodo = document.querySelector(".todo-input");
 const checked = document.querySelector(".todo-input-container .check-todo");
 const todoUl = document.querySelector(".todos ul");
-
 const itemsLeft = document.querySelector(".items-left");
-
 const showAll = document.querySelector(".options .all");
 const showActive = document.querySelector(".options .active");
 const showCompleted = document.querySelector(".options .completed");
 const clearCompleted = document.querySelector(".clear-completed");
 const states = {all: "all", active: "active", completed: "completed"};
+const TODO = "_TODOS_DATA_";
 let todos, state;
 
-todos = [];
+todos = localStorage.getItem(TODO) ? JSON.parse(localStorage.getItem(TODO)) : [];
 state = states.all;
 
-let byme = ["one", "two", "three", "four", "five"];
-
-for (let i = 0; i < byme.length; i++)
-    add_todo(byme[i]);
+if (todos.length)
+    render(false);
 
 todoUl.addEventListener("dragover", event => {
     event.preventDefault();
@@ -31,6 +28,52 @@ todoUl.addEventListener("dragover", event => {
     }
     else {
         todoUl.insertBefore(dragger, afterElement);
+    }
+});
+
+showAll.addEventListener("click", () => {
+    if (showAll.classList.contains("selected"))
+        return;
+    
+    document.querySelector(".selected").classList.remove("selected");
+    showAll.classList.add("selected");
+    state = states.all;
+    render(false);
+});
+
+showActive.addEventListener("click", () => {
+    if (showActive.classList.contains("selected"))
+        return;
+    
+    document.querySelector(".selected").classList.remove("selected");
+    showActive.classList.add("selected");
+    state = states.active;
+    render(false);
+});
+
+showCompleted.addEventListener("click", () => {
+    if (showCompleted.classList.contains("selected"))
+        return;
+    
+    document.querySelector(".selected").classList.remove("selected");
+    showCompleted.classList.add("selected");
+    state = states.completed;
+    render(false);
+});
+
+clearCompleted.addEventListener("click", () => {
+    todos = todos.filter(todo => !todo.checked);
+    render(true);
+});
+
+document.addEventListener("keydown", event => {
+    if (event.key == "Enter" && document.activeElement == addTodo) {
+        const value = addTodo.value.trim();
+
+        if (!value)
+            return;
+        
+        add_todo(value);
     }
 });
 
@@ -47,51 +90,16 @@ function compute_after_element(container, y) {
     }, {offset: Number.NEGATIVE_INFINITY}).element;
 }
 
-showAll.addEventListener("click", () => {
-    if (showAll.classList.contains("selected"))
-        return;
-    
-    document.querySelector(".selected").classList.remove("selected");
-    showAll.classList.add("selected");
-    state = states.all;
-    render();
-});
-
-showActive.addEventListener("click", () => {
-    if (showActive.classList.contains("selected"))
-        return;
-    
-    document.querySelector(".selected").classList.remove("selected");
-    showActive.classList.add("selected");
-    state = states.active;
-    render();
-});
-
-showCompleted.addEventListener("click", () => {
-    if (showCompleted.classList.contains("selected"))
-        return;
-    
-    document.querySelector(".selected").classList.remove("selected");
-    showCompleted.classList.add("selected");
-    state = states.completed;
-    render();
-});
-
-clearCompleted.addEventListener("click", () => {
-    todos = todos.filter(todo => !todo.checked);
-    render();
-});
-
 function delete_todo(id) {
     todos = todos.filter(todo => todo.id != id);
-    render();
+    render(true);
 }
 
 function update_state(id) {
     const index = todos.findIndex(todo => todo.id == id);
 
     todos = todos.slice(0, index).concat({value: todos[index].value, id, checked: !todos[index].checked}).concat(todos.slice(index + 1));
-    render();
+    render(true);
     update_items_left();
 }
 
@@ -100,10 +108,10 @@ function add_todo(value) {
 
     todos.push({value, id, checked: checked.checked});
     addTodo.value = '';
-    render();
+    render(true);
 }
 
-function render() {
+function render(store) {
     todoUl.innerHTML = '';
 
     for (let todo of todos) {
@@ -137,7 +145,7 @@ function render() {
                     temp.push(todos[index]);
                 }
                 todos = temp;
-                render();
+                render(true);
 
                 li.classList.remove("dragging");
             });
@@ -150,26 +158,14 @@ function render() {
 
     if (checked.checked)
         checked.checked = false;
-}
 
-function copy_array(arr) {
-    return JSON.parse(JSON.stringify(arr));
+    if (store)
+        localStorage.setItem(TODO, JSON.stringify(todos));
 }
 
 function update_items_left() {
     itemsLeft.innerText = `${todos.reduce((count, todo) => count += Number(!todo.checked), 0)} items left`;
 }
-
-document.addEventListener("keydown", event => {
-    if (event.key == "Enter" && document.activeElement == addTodo) {
-        const value = addTodo.value.trim();
-
-        if (!value)
-            return;
-        
-        add_todo(value);
-    }
-});
 
 function create_todo(todo, remove, update) {
     const todoElem = document.createElement("div");
